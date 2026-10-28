@@ -1,263 +1,208 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Break-Even Analysis Calculator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Break-Even Calculator</title>
 <style>
-:root{--bg:#f6f7f9;--card:#fff;--ink:#1c2330;--mut:#5d6778;--line:#dfe3ea;--acc:#1f6feb;--ok:#e8f5ec;--okink:#14532d;--errbg:#fde8e8;--errink:#8a1c1c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161d;--card:#1b212b;--ink:#e8ecf2;--mut:#9aa5b5;--line:#2c3441;--acc:#58a6ff;--ok:#16301f;--okink:#a7f3c0;--errbg:#3a1b1b;--errink:#ffb4b4}}
-:root[data-theme="dark"]{--bg:#12161d;--card:#1b212b;--ink:#e8ecf2;--mut:#9aa5b5;--line:#2c3441;--acc:#58a6ff;--ok:#16301f;--okink:#a7f3c0;--errbg:#3a1b1b;--errink:#ffb4b4}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,sans-serif}
-main{max-width:860px;margin:0 auto;padding:24px 16px 64px}
-h1{font-size:1.5rem;margin:0 0 4px}.sub{color:var(--mut);margin:0 0 20px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:14px}
-.tabs{display:flex;gap:8px;margin-bottom:14px}.tabs label{flex:1;text-align:center;padding:10px;border:1px solid var(--line);border-radius:10px;cursor:pointer}
-.tabs input{display:none}.tabs input:checked+span{color:var(--acc);font-weight:700}.tabs label:has(input:checked){border-color:var(--acc)}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
-label.f{display:block;font-size:.85rem;color:var(--mut)}label.f input{display:block;width:100%;margin-top:4px;padding:9px;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px}
-button.go{margin-top:14px;padding:10px 22px;font:inherit;font-weight:600;color:#fff;background:var(--acc);border:0;border-radius:8px;cursor:pointer}
-.ex{font-size:.85rem;color:var(--mut);margin-top:12px}.ex button{font:inherit;background:none;border:0;color:var(--acc);cursor:pointer;margin-right:8px;padding:0;text-decoration:underline}
-h3{margin:0 0 8px;font-size:1.05rem}ol{margin:0 0 10px;padding-left:22px}li{margin:3px 0;font-family:ui-monospace,Consolas,monospace;font-size:.9rem;overflow-wrap:anywhere}
-.ans{background:var(--ok);color:var(--okink);padding:9px 12px;border-radius:8px;font-weight:600}
-.err{background:var(--errbg);color:var(--errink);padding:12px;border-radius:8px}
-[hidden]{display:none!important}
+:root{--bg:#f3f6fa;--card:#fff;--ink:#16202e;--mut:#5d6b7e;--line:#d9e0ea;--acc:#1457b8;--accbg:#e6effb;--tr:#0d7a53;--tc:#c2371d;--resbg:#e8f4ee}
+@media(prefers-color-scheme:dark){:root{--bg:#10161f;--card:#18212d;--ink:#e6ebf2;--mut:#9aa8bb;--line:#2a3646;--acc:#7db0ff;--accbg:#1c2d48;--tr:#4cd39b;--tc:#ff8a73;--resbg:#173328}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:1.6rem;margin:8px 0 4px}
+.sub{color:var(--mut);margin:0 0 18px}
+.tabs{display:flex;gap:6px;margin-bottom:14px}
+.tabs button{flex:1;padding:11px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:8px;font:inherit;font-weight:600;cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--acc);border-color:var(--acc);color:#fff}
+@media(prefers-color-scheme:dark){.tabs button[aria-selected=true]{color:#0a1626}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+label{display:block;font-size:.9rem;font-weight:600}
+label small{display:block;font-weight:400;color:var(--mut)}
+input{width:100%;margin-top:4px;padding:9px 10px;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px}
+input:focus-visible,button:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+h2{font-size:1.05rem;margin:0 0 10px}
+.opt{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+.opt p{margin:0 0 8px;color:var(--mut);font-size:.9rem}
+.row{display:flex;gap:8px;margin-top:14px}
+.row button{padding:8px 14px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+.step{border-left:4px solid var(--acc);padding:4px 0 4px 14px;margin:0 0 18px}
+.step h3{font-size:1rem;margin:0 0 6px}
+.eq{font:1rem/1.7 Cambria,"Cambria Math",Georgia,serif;overflow-wrap:anywhere}
+.res{display:inline-block;margin:4px 0;padding:3px 10px;background:var(--resbg);border-radius:6px;font:600 1rem Cambria,"Cambria Math",Georgia,serif}
+.note{color:var(--mut);font-size:.92rem;margin:2px 0}
+.msg{color:var(--mut)}
+svg{width:100%;height:auto;display:block}
+svg text{fill:var(--mut);font:11px system-ui,sans-serif}
+.gl{stroke:var(--line)}
+.ln{fill:none;stroke-width:2.5}
+.trl{stroke:var(--tr)}.tcl{stroke:var(--tc)}
 </style>
 </head>
 <body>
 <main>
-<h1>Break-Even Analysis Calculator</h1>
-<p class="sub">Linear and non-linear break-even problems, solved step by step. Amounts in pesos (₱).</p>
+<h1>Break-Even Calculator</h1>
+<p class="sub">Linear and non-linear break-even analysis with a full step-by-step solution. Amounts are in pesos.</p>
 
-<form id="f" class="card">
-  <div class="tabs">
-    <label><input type="radio" name="mode" value="linear" checked><span>Linear</span></label>
-    <label><input type="radio" name="mode" value="nonlinear"><span>Non-Linear</span></label>
-  </div>
-  <div class="grid">
-    <label class="f" data-mode="linear">Selling price per unit<input id="p" value="6" inputmode="decimal"></label>
-    <label class="f" data-mode="nonlinear">Starting price per unit (a)<input id="a" value="12" inputmode="decimal"></label>
-    <label class="f" data-mode="nonlinear">Price drop per unit sold (b)<input id="b" value="0.1" inputmode="decimal"></label>
-    <label class="f">Variable cost per unit<input id="v" value="3" inputmode="decimal"></label>
-    <label class="f">Fixed cost<input id="fc" value="9000" inputmode="decimal"></label>
-    <label class="f">Target profit (optional)<input id="T" value="9000" inputmode="decimal"></label>
-    <label class="f">Units sold, to find profit (optional)<input id="u" value="600" inputmode="decimal"></label>
-    <label class="f" data-mode="linear">Break-even units → new variable cost<input id="nv" value="2000" inputmode="decimal"></label>
-    <label class="f" data-mode="linear">Break-even units → new fixed cost<input id="nf" value="" inputmode="decimal"></label>
-    <label class="f" data-mode="linear">Break-even units → new selling price<input id="np" value="300" inputmode="decimal"></label>
-  </div>
-  <button class="go" type="submit">Solve</button>
-  <div class="ex">Load an example from the slides:
-    <button type="button" data-ex="1">Example 1</button>
-    <button type="button" data-ex="2">Example 2</button>
-    <button type="button" data-ex="3">Example 3 (non-linear)</button>
-  </div>
-</form>
-<div id="out"></div>
+<div class="tabs" role="tablist">
+<button role="tab" id="t1" aria-selected="true">Linear</button>
+<button role="tab" id="t2" aria-selected="false">Non-linear</button>
+</div>
+
+<section id="p1" class="card">
+<h2>Linear: constant selling price</h2>
+<div class="grid">
+<label>Selling price per unit<input id="lp" type="number" step="any" value="15"></label>
+<label>Variable cost per unit<input id="lv" type="number" step="any" value="10"></label>
+<label>Fixed cost<input id="lf" type="number" step="any" value="6000"></label>
+</div>
+<div class="opt">
+<p>Optional questions (leave blank to skip)</p>
+<div class="grid">
+<label>Units sold<small>find the profit</small><input id="lu" type="number" step="any" value="500"></label>
+<label>Target profit<small>find the units needed</small><input id="lt" type="number" step="any" value="8000"></label>
+<label>Break-even at this many units<small>find the new VC, price, or FC</small><input id="ln" type="number" step="any" value="500"></label>
+</div>
+</div>
+<div class="row"><button type="button" data-clear="p1">Clear</button></div>
+</section>
+
+<section id="p2" class="card" hidden>
+<h2>Non-linear: price drops as units sold increase</h2>
+<div class="grid">
+<label>Starting price per unit (a)<input id="na" type="number" step="any" value="12"></label>
+<label>Price drop per unit sold (b)<small>price = a − bx</small><input id="nb" type="number" step="any" value="0.1"></label>
+<label>Variable cost per unit<input id="nv" type="number" step="any" value="7"></label>
+<label>Fixed cost<input id="nf" type="number" step="any" value="40"></label>
+</div>
+<div class="opt">
+<p>Optional questions (leave blank to skip)</p>
+<div class="grid">
+<label>Units sold<small>find the profit</small><input id="nu" type="number" step="any" value="50"></label>
+<label>Target profit<small>find the units needed</small><input id="nt" type="number" step="any"></label>
+</div>
+</div>
+<div class="row"><button type="button" data-clear="p2">Clear</button></div>
+</section>
+
+<section class="card" id="gcard" hidden><h2>Graph</h2><div id="chart"></div></section>
+<section class="card"><h2>Solution</h2><div id="out"></div></section>
 </main>
+
 <script>
-const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function n(x, d = 4){
-  let r = Math.round(x * 10 ** d) / 10 ** d; if (r === 0) r = 0;
-  const s = Math.abs(r).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: d});
-  return (r < 0 ? '−' : '') + s;
-}
-const peso = x => (x < 0 ? '−' : '') + '₱' + n(Math.abs(x));
-function num(s){ s = String(s).replace(/,/g, '').trim(); return s !== '' && isFinite(s) ? parseFloat(s) : null; }
-function sumStr(t){ return t.map((c, i) => i === 0 ? (c < 0 ? '−' : '') + n(Math.abs(c)) : (c < 0 ? ' − ' : ' + ') + n(Math.abs(c))).join(''); }
-function poly(A, B, C){
-  let s = '';
-  for (const [c, t] of [[A, 'x²'], [B, 'x'], [C, '']]) {
-    if (Math.abs(c) < 1e-12) continue;
-    const a = (Math.abs(c) === 1 && t !== '') ? '' : n(Math.abs(c));
-    s += s === '' ? (c < 0 ? '−' : '') + a + t : (c < 0 ? ' − ' : ' + ') + a + t;
-  }
-  return s === '' ? '0' : s;
-}
-function change(o, nw){
-  const d = nw - o; if (Math.abs(d) < 1e-9) return 'no change';
-  return (d > 0 ? 'an increase' : 'a decrease') + ' of ' + peso(Math.abs(d)) + ' (from ' + peso(o) + ' to ' + peso(nw) + ')';
-}
-const factor = r => r >= 0 ? '(x − ' + n(r) + ')' : '(x + ' + n(-r) + ')';
-const verdict = P => (P < 0 ? 'Loss of ' : P > 0 ? 'Profit of ' : 'Break-even: ') + peso(Math.abs(P));
+const $=id=>document.getElementById(id);
+const val=id=>{const s=$(id).value.trim();if(s==='')return null;const x=Number(s);return isFinite(x)?x:null};
+const fmt=(x,d)=>{const k=10**d;let s=(Math.round((x+Number.EPSILON*Math.sign(x))*k)/k).toLocaleString('en-US',{maximumFractionDigits:d});s=s.replace('-','−');return s==='−0'?'0':s};
+const f=x=>fmt(x,4), pf=x=>(x<0?'−':'')+'₱'+fmt(Math.abs(x),2);
+const t=(c,s)=>' '+(c<0?'−':'+')+' '+f(Math.abs(c))+s;
+const S=(title,...l)=>'<div class="step"><h3>'+title+'</h3>'+l.flat().map(L=>L[0]==='>'?'<div class="res">'+L.slice(1)+'</div>':L[0]==='#'?'<div class="note">'+L.slice(1)+'</div>':'<div class="eq">'+L+'</div>').join('')+'</div>';
+const chg=(o,n)=>n===o?'No change needed.':(n>o?'Increase':'Decrease')+' = '+pf(Math.abs(n-o))+' per unit';
+const lab=p=>p>=0?'profit':'loss';
 
-function linear(I){
-  const parts = [], add = (title, steps, answer) => parts.push({title, steps, answer});
-  const {p, v, F, T, u, nv, nf, np} = I;
-  if (p === null || v === null || F === null) return {err: 'Enter the selling price, variable cost per unit, and fixed cost.', parts};
-  const m = p - v, tc = poly(0, v, F);
-  add('TR, TC and Profit functions', [
-    'Let x = number of units sold.',
-    'TR = (selling price)(x) = ' + n(p) + 'x',
-    'VC = (cost per unit)(x) = ' + n(v) + 'x',
-    'TC = VC + FC = ' + tc,
-    'P = TR − TC = ' + n(p) + 'x − (' + tc + ')',
-    'P = ' + poly(0, m, -F),
-    'Contribution margin per unit = ' + n(p) + ' − ' + n(v) + ' = ' + peso(m)
-  ], 'TR = ' + n(p) + 'x;  TC = ' + tc + ';  P = ' + poly(0, m, -F));
-  if (T !== null) {
-    if (Math.abs(m) < 1e-12) add('Sales volume for a profit of ' + peso(T), ['Contribution margin is ₱0, so profit never changes with volume.'], 'Not solvable');
-    else {
-      const x = (T + F) / m;
-      add('Sales volume for a profit of ' + peso(T), [
-        'Use P = ' + poly(0, m, -F) + ' and set P = ' + n(T),
-        n(T) + ' = ' + n(m) + 'x − ' + n(F),
-        'Add ' + n(F) + ' to both sides: ' + n(T) + ' + ' + n(F) + ' = ' + n(m) + 'x  →  ' + n(T + F) + ' = ' + n(m) + 'x',
-        'Divide by ' + n(m) + ': x = ' + n(T + F) + ' ÷ ' + n(m) + ' = ' + n(x),
-        'Check: TR = ' + n(p) + '(' + n(x) + ') = ' + n(p * x) + ';  TC = ' + n(v) + '(' + n(x) + ') + ' + n(F) + ' = ' + n(v * x + F) + ';  P = ' + n(p * x - v * x - F)
-      ], n(x) + ' units');
-    }
-  }
-  if (u !== null) {
-    const P = m * u - F;
-    add('Profit when sales are ' + n(u) + ' units', [
-      'Use P = ' + poly(0, m, -F),
-      'P = ' + n(m) + '(' + n(u) + ') − ' + n(F),
-      'P = ' + n(m * u) + ' − ' + n(F),
-      'P = ' + n(P) + (P < 0 ? '  (a negative profit is a loss)' : '')
-    ], verdict(P));
-  }
-  if (m <= 0) add('Break-even quantity and revenue', ['Price (' + n(p) + ') is not greater than variable cost (' + n(v) + '), so each unit sold adds no margin.'], 'No break-even point exists');
-  else {
-    const x = F / m;
-    add('Break-even quantity and revenue', [
-      'At break-even, TR = TC',
-      n(p) + 'x = ' + n(v) + 'x + ' + n(F),
-      n(p) + 'x − ' + n(v) + 'x = ' + n(F) + '  →  ' + n(m) + 'x = ' + n(F),
-      'x = ' + n(F) + ' ÷ ' + n(m) + ' = ' + n(x),
-      'BEP revenue: TR = ' + n(p) + '(' + n(x) + ') = ' + peso(p * x),
-      'Selling fewer than ' + n(x) + ' units is a loss; more is a profit (price and costs constant).'
-    ], 'BEP = ' + n(x) + ' units, revenue = ' + peso(p * x));
-  }
-  if (p > 0) add('Units needed to cover the fixed cost', ['Cover fixed cost: TR = FC', n(p) + 'x = ' + n(F), 'x = ' + n(F) + ' ÷ ' + n(p) + ' = ' + n(F / p)], n(F / p) + ' units');
-  if (nv !== null && nv > 0) {
-    const y = (p * nv - F) / nv;
-    add('New variable cost per unit to break even at ' + n(nv) + ' units', [
-      'Let y = new variable cost per unit. Price and FC stay constant.',
-      'TR = ' + n(p) + '(' + n(nv) + ') = ' + n(p * nv),
-      'TC = ' + n(nv) + 'y + ' + n(F),
-      'TR = TC  →  ' + n(p * nv) + ' = ' + n(nv) + 'y + ' + n(F),
-      n(p * nv) + ' − ' + n(F) + ' = ' + n(nv) + 'y  →  ' + n(p * nv - F) + ' = ' + n(nv) + 'y',
-      'y = ' + n(p * nv - F) + ' ÷ ' + n(nv) + ' = ' + n(y)
-    ], 'y = ' + peso(y) + ' per unit — ' + change(v, y));
-  }
-  if (nf !== null && nf > 0) {
-    const F2 = (p - v) * nf;
-    add('New fixed cost to break even at ' + n(nf) + ' units', [
-      'Let F = new fixed cost. Price and VC stay constant.',
-      'TR = ' + n(p) + '(' + n(nf) + ') = ' + n(p * nf),
-      'VC = ' + n(v) + '(' + n(nf) + ') = ' + n(v * nf),
-      'TR = VC + F  →  ' + n(p * nf) + ' = ' + n(v * nf) + ' + F',
-      'F = ' + n(p * nf) + ' − ' + n(v * nf) + ' = ' + n(F2)
-    ], 'F = ' + peso(F2) + ' — ' + change(F, F2));
-  }
-  if (np !== null && np > 0) {
-    const y = (v * np + F) / np;
-    add('New selling price to break even at ' + n(np) + ' units', [
-      'Let y = new selling price per unit. VC and FC stay constant.',
-      'TR = ' + n(np) + 'y',
-      'TC = ' + n(v) + '(' + n(np) + ') + ' + n(F) + ' = ' + n(v * np + F),
-      'TR = TC  →  ' + n(np) + 'y = ' + n(v * np + F),
-      'y = ' + n(v * np + F) + ' ÷ ' + n(np) + ' = ' + n(y)
-    ], 'y = ' + peso(y) + ' per unit — ' + change(p, y));
-  }
-  return {err: '', parts};
+/* ---------- graph ---------- */
+function chart(TR,TC,xmax,pts){
+  const W=640,H=320,L=64,R=18,T=26,B=40,n=120;
+  let ymax=0;
+  for(let i=0;i<=n;i++){const x=xmax*i/n;ymax=Math.max(ymax,TR(x),TC(x))}
+  const nice=m=>{const e=10**Math.floor(Math.log10(m)),k=m/e;return(k<=1?1:k<=2?2:k<=5?5:10)*e};
+  const ys=nice((ymax||1)/4);ymax=ys*Math.ceil((ymax||1)/ys);
+  const xs=nice(xmax/5);
+  const X=x=>L+(W-L-R)*x/xmax,Y=y=>H-B-(H-B-T)*y/ymax;
+  const path=g=>{let s='';for(let i=0;i<=n;i++){const x=xmax*i/n;s+=(i?'L':'M')+X(x).toFixed(1)+' '+Y(g(x)).toFixed(1)}return s};
+  let o='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Total revenue and total cost graph">';
+  for(let y=0;y<=ymax+1e-9;y+=ys)o+='<line class="gl" x1="'+L+'" x2="'+(W-R)+'" y1="'+Y(y)+'" y2="'+Y(y)+'"/><text x="'+(L-6)+'" y="'+(Y(y)+4)+'" text-anchor="end">'+f(y)+'</text>';
+  for(let x=0;x<=xmax+1e-9;x+=xs)o+='<text x="'+X(x)+'" y="'+(H-B+16)+'" text-anchor="middle">'+f(x)+'</text>';
+  o+='<text x="'+(W/2)+'" y="'+(H-6)+'" text-anchor="middle">Units sold (x)</text>';
+  o+='<path class="ln trl" d="'+path(TR)+'"/><path class="ln tcl" d="'+path(TC)+'"/>';
+  o+='<line x1="'+L+'" x2="'+(L+22)+'" y1="12" y2="12" class="ln trl"/><text x="'+(L+28)+'" y="16">TR</text><line x1="'+(L+60)+'" x2="'+(L+82)+'" y1="12" y2="12" class="ln tcl"/><text x="'+(L+88)+'" y="16">TC</text>';
+  pts.forEach(p=>{const cx=X(p.x),cy=Y(p.y),a=cx>W-110?'end':'start';o+='<circle cx="'+cx+'" cy="'+cy+'" r="5" fill="var(--acc)"/><text x="'+(cx+(a==='end'?-8:8))+'" y="'+(cy-8)+'" text-anchor="'+a+'" style="fill:var(--ink);font-weight:600">('+f(p.x)+', '+f(p.y)+')</text>'});
+  $('chart').innerHTML=o+'</svg>';$('gcard').hidden=false;
 }
 
-function nonlinear(I){
-  const parts = [], add = (title, steps, answer) => parts.push({title, steps, answer});
-  const {a, b, v, F, T, u} = I;
-  if (a === null || b === null || v === null || F === null) return {err: 'Enter the starting price, price drop per unit, variable cost, and fixed cost.', parts};
-  if (b <= 0) return {err: 'The price drop per unit sold must be greater than 0 (otherwise the function is linear — use Linear mode).', parts};
-  const A = -b, B = a - v, C = -F;
-  add('Selling price, TR, TC and Profit functions', [
-    'Let x = number of units sold.',
-    'New selling price per unit = ' + n(a) + ' − ' + n(b) + 'x',
-    'TR = (price)(x) = (' + n(a) + ' − ' + n(b) + 'x)(x)',
-    'TR = ' + poly(-b, a, 0),
-    'TC = VC + FC = ' + poly(0, v, F),
-    'P = TR − TC = (' + poly(-b, a, 0) + ') − (' + poly(0, v, F) + ')',
-    'P = ' + poly(A, B, C)
-  ], 'Price = ' + n(a) + ' − ' + n(b) + 'x;  TR = ' + poly(-b, a, 0) + ';  TC = ' + poly(0, v, F) + ';  P = ' + poly(A, B, C));
-
-  const solve = (target, title) => {
-    const K = F + target, S = B / b, Q = K / b, D = S * S - 4 * Q;
-    const s = ['Set P = ' + n(target) + ':  ' + poly(A, B, 0) + ' − ' + n(F) + ' = ' + n(target)];
-    if (Math.abs(target) > 1e-12) s.push('Move to one side:  ' + poly(A, B, -K) + ' = 0');
-    s.push('Multiply both sides by ' + n(-1 / b) + ' so the x² term is 1:  ' + poly(1, -S, Q) + ' = 0');
-    s.push('Discriminant: D = (' + n(-S) + ')² − 4(1)(' + n(Q) + ') = ' + n(S * S) + ' − ' + n(4 * Q) + ' = ' + n(D));
-    let ans;
-    if (D < -1e-9) { s.push('D < 0, so there are no real solutions.'); ans = 'No real solution — this profit level is never reached'; }
-    else {
-      const sq = Math.sqrt(Math.max(D, 0)), r1 = (S - sq) / 2, r2 = (S + sq) / 2;
-      s.push('Quadratic formula: x = [' + n(S) + ' ± √' + n(D) + '] ÷ 2 = [' + n(S) + ' ± ' + n(sq) + '] ÷ 2');
-      if (Math.abs(r1 - Math.round(r1)) < 1e-9 && Math.abs(r2 - Math.round(r2)) < 1e-9)
-        s.push('Factoring: ' + factor(Math.round(r1)) + factor(Math.round(r2)) + ' = 0  →  x = ' + n(r1) + ' or x = ' + n(r2));
-      else s.push('x = ' + n(r1) + ' or x = ' + n(r2));
-      const roots = Math.abs(D) < 1e-9 ? [r1] : [r1, r2], max = a / b, valid = [], out = [];
-      for (const r of roots) {
-        if (r > 0 && r < max) valid.push(r);
-        else s.push('x = ' + n(r) + ' is rejected (units must be positive and the price ' + n(a) + ' − ' + n(b) + 'x must stay positive).');
-      }
-      for (const r of valid) {
-        const tr = a * r - b * r * r;
-        s.push('At x = ' + n(r) + ':  TR = ' + n(a) + '(' + n(r) + ') − ' + n(b) + '(' + n(r) + ')² = ' + sumStr([a * r, -b * r * r]) + ' = ' + n(tr));
-        out.push('x = ' + n(r) + ' units (TR = ' + peso(tr) + ')');
-      }
-      if (valid.length === 2 && Math.abs(target) < 1e-12)
-        s.push('Selling fewer than ' + n(valid[0]) + ' or more than ' + n(valid[1]) + ' units is a loss; between them there is a profit.');
-      ans = out.length ? out.join('  and  ') : 'No valid solution';
-    }
-    add(title, s, ans);
-  };
-  solve(0, 'Break-even points (P = 0)');
-  if (T !== null && Math.abs(T) > 1e-12) solve(T, 'Sales volume for a profit of ' + peso(T));
-  if (u !== null) {
-    const P = A * u * u + B * u + C;
-    add('Profit when sales are ' + n(u) + ' units', [
-      'Use P = ' + poly(A, B, C),
-      'P = ' + n(A) + '(' + n(u) + ')² + ' + n(B) + '(' + n(u) + ') − ' + n(F),
-      'P = ' + sumStr([A * u * u, B * u, -F]),
-      'P = ' + n(P) + (P < 0 ? '  (negative = loss)' : '')
-    ], verdict(P));
+/* ---------- linear ---------- */
+function linear(){
+  const p=val('lp'),v=val('lv'),F=val('lf'),u=val('lu'),T=val('lt'),N=val('ln');
+  if(p===null||v===null||F===null){$('out').innerHTML='<p class="msg">Enter the selling price, variable cost per unit, and fixed cost to see the solution.</p>';$('gcard').hidden=true;return}
+  const m=p-v;let h='';
+  h+=S('Given','Selling price per unit (SP) = '+pf(p),'Variable cost per unit (VC) = '+pf(v),'Fixed cost (FC) = '+pf(F),'Contribution per unit = SP − VC = '+f(p)+' − '+f(v)+' = '+pf(m),'#Let x = number of units sold.');
+  h+=S('1. TR, TC, and profit functions','TR = SP · x = '+f(p)+'x','VC = '+f(v)+'x','TC = VC + FC = '+f(v)+'x + '+f(F),'P = TR − TC = '+f(p)+'x − ('+f(v)+'x + '+f(F)+')','>P = '+f(m)+'x − '+f(F));
+  let bx=null;
+  if(m>0){
+    bx=F/m;
+    h+=S('2. Break-even quantity and revenue','At break-even, TR = TC',f(p)+'x = '+f(v)+'x + '+f(F),f(p)+'x − '+f(v)+'x = '+f(F),f(m)+'x = '+f(F),'x = '+f(F)+' ÷ '+f(m),'>Break-even quantity = '+f(bx)+' units','TR = '+f(p)+'('+f(bx)+')','>Break-even revenue = '+pf(p*bx),Number.isInteger(bx)?'':'#Not a whole number, so in practice sell '+f(Math.ceil(bx))+' units to reach break-even.','#Selling fewer than '+f(bx)+' units gives a loss; selling more gives a profit.');
+  }else h+=S('2. Break-even quantity and revenue','Contribution per unit = '+pf(m),'#The contribution per unit is zero or negative, so revenue never catches up with cost. There is no break-even point.');
+  if(p>0)h+=S('3. Units needed to cover the fixed cost','Set TR = FC',f(p)+'x = '+f(F),'x = '+f(F)+' ÷ '+f(p),'>x = '+f(F/p)+' units');
+  if(u!==null){const P=m*u-F;h+=S('4. Profit when sales are '+f(u)+' units','P = '+f(m)+'x − '+f(F),'P = '+f(m)+'('+f(u)+') − '+f(F),'P = '+f(m*u)+' − '+f(F),'>P = '+pf(P)+' ('+lab(P)+')',P<0?'#A negative profit means a loss.':'')}
+  if(T!==null){
+    if(m>0){const x=(T+F)/m;h+=S('5. Sales volume when profit is '+pf(T),'Use P = '+f(m)+'x − '+f(F),f(T)+' = '+f(m)+'x − '+f(F),f(T)+' + '+f(F)+' = '+f(m)+'x',f(T+F)+' = '+f(m)+'x','x = '+f(T+F)+' ÷ '+f(m),'>x = '+f(x)+' units','#Check: revenue '+pf(p*x)+' − total cost '+pf(v*x+F)+' = '+pf(p*x-v*x-F))}
+    else h+=S('5. Sales volume for the target profit','#Not possible: the contribution per unit is zero or negative.');
   }
-  if (B > 0) {
-    const xm = B / (2 * b), Pm = A * xm * xm + B * xm + C;
-    add('Bonus: profit-maximizing volume', [
-      'P is a downward parabola, so its peak is at the vertex x = −B ÷ 2A',
-      'x = −' + n(B) + ' ÷ 2(' + n(A) + ') = ' + n(xm),
-      'P(' + n(xm) + ') = ' + sumStr([A * xm * xm, B * xm, -F]) + ' = ' + n(Pm),
-      'Selling price at that volume = ' + n(a) + ' − ' + n(b) + '(' + n(xm) + ') = ' + n(a - b * xm)
-    ], 'Maximum profit ' + peso(Pm) + ' at ' + n(xm) + ' units');
+  if(N!==null&&N>0){
+    const yv=(p*N-F)/N,ys=(v*N+F)/N,nf=m*N;
+    h+=S('6a. New variable cost to break even at '+f(N)+' units','Let y = new VC per unit. SP and FC stay the same.','TR = '+f(p)+'('+f(N)+') = '+pf(p*N),'TC = '+f(N)+'y + '+f(F),'TR = TC → '+f(p*N)+' = '+f(N)+'y + '+f(F),f(p*N-F)+' = '+f(N)+'y','y = '+f(p*N-F)+' ÷ '+f(N),'>New VC = '+pf(yv)+' per unit','Original VC = '+pf(v)+', so '+chg(v,yv).toLowerCase());
+    h+=S('6b. New selling price to break even at '+f(N)+' units','Let y = new SP per unit. VC and FC stay the same.','TC = '+f(v)+'('+f(N)+') + '+f(F)+' = '+pf(v*N+F),'TR = '+f(N)+'y','TR = TC → '+f(N)+'y = '+f(v*N+F),'y = '+f(v*N+F)+' ÷ '+f(N),'>New SP = '+pf(ys)+' per unit','Original SP = '+pf(p)+', so '+chg(p,ys).toLowerCase());
+    h+=S('6c. New fixed cost to break even at '+f(N)+' units','Let F′ = new fixed cost. SP and VC stay the same.','TR = '+f(p)+'('+f(N)+') = '+pf(p*N),'VC = '+f(v)+'('+f(N)+') = '+pf(v*N),'TR = VC + F′ → '+f(p*N)+' = '+f(v*N)+' + F′','F′ = '+f(p*N)+' − '+f(v*N),'>New FC = '+pf(nf),'Original FC = '+pf(F)+', so '+(nf===F?'no change needed.':(nf>F?'increase':'decrease')+' = '+pf(Math.abs(nf-F))));
   }
-  return {err: '', parts};
+  $('out').innerHTML=h;
+  const xmax=Math.max(bx!==null?bx*2:0,u||0,N||0,10);
+  chart(x=>p*x,x=>v*x+F,xmax,bx!==null?[{x:bx,y:p*bx}]:[]);
 }
 
-const ids = ['p', 'a', 'b', 'v', 'fc', 'T', 'u', 'nv', 'nf', 'np'];
-const $ = id => document.getElementById(id);
-const getMode = () => document.querySelector('input[name=mode]:checked').value;
-function sync(){ const m = getMode(); document.querySelectorAll('[data-mode]').forEach(el => el.hidden = el.dataset.mode !== m); }
-function solve(){
-  const I = {}; ids.forEach(id => I[id] = num($(id).value)); I.F = I.fc;
-  const r = getMode() === 'linear' ? linear(I) : nonlinear(I);
-  $('out').innerHTML = (r.err ? '<div class="err">' + esc(r.err) + '</div>' : '') + r.parts.map((pt, i) =>
-    '<section class="card"><h3>' + (i + 1) + '. ' + esc(pt.title) + '</h3><ol>' + pt.steps.map(s => '<li>' + esc(s) + '</li>').join('') +
-    '</ol><div class="ans">Answer: ' + esc(pt.answer) + '</div></section>').join('');
+/* ---------- non-linear ---------- */
+function roots(p,q){const D=p*p-4*q;if(D<0)return{D,r:[]};const s=Math.sqrt(D);return{D,s,r:D===0?[p/2]:[(p-s)/2,(p+s)/2]}}
+function nonlinear(){
+  const a=val('na'),b=val('nb'),v=val('nv'),F=val('nf'),u=val('nu'),T=val('nt');
+  if(a===null||b===null||v===null||F===null){$('out').innerHTML='<p class="msg">Enter the starting price, price drop per unit sold, variable cost, and fixed cost to see the solution.</p>';$('gcard').hidden=true;return}
+  if(b<=0){$('out').innerHTML='<p class="msg">The price drop per unit sold (b) must be greater than 0. For a constant price, use the Linear tab.</p>';$('gcard').hidden=true;return}
+  const B=a-v,p=B/b,q=F/b;
+  const P=x=>-b*x*x+B*x-F, TR=x=>a*x-b*x*x;
+  const Pstr='−'+f(b)+'x²'+t(B,'x')+t(-F,'');
+  let h='';
+  h+=S('Given','Starting price = '+pf(a)+', decreasing by '+pf(b)+' for every unit sold','VC = '+pf(v)+' per unit, FC = '+pf(F),'#Let x = number of units sold.');
+  h+=S('1. New selling price per unit','Price = '+f(a)+' − '+f(b)+'x');
+  h+=S('2. TR, TC, and profit functions','TR = (price)(x) = ('+f(a)+' − '+f(b)+'x)x','>TR = '+f(a)+'x − '+f(b)+'x²','>TC = '+f(v)+'x + '+f(F),'P = TR − TC = ('+f(a)+'x − '+f(b)+'x²) − ('+f(v)+'x + '+f(F)+')','>P = '+Pstr);
+  const R=roots(p,q);
+  const std='x²'+t(-p,'x')+t(q,'')+' = 0';
+  let s3=['At break-even, P = 0',Pstr+' = 0','Multiply both sides by −1/b = '+f(-1/b)+' so the x² term has coefficient 1:',std,'Use the quadratic formula on x² − px + q = 0 with p = '+f(p)+' and q = '+f(q)+':','D = p² − 4q = ('+f(p)+')² − 4('+f(q)+') = '+f(R.D)];
+  if(R.D<0){s3.push('>D is negative: no real solution','#The profit curve never reaches zero, so the firm never breaks even.')}
+  else{
+    s3.push('x = [p ± √D] ÷ 2 = ['+f(p)+' ± √'+f(R.D)+'] ÷ 2 = ['+f(p)+' ± '+f(R.s)+'] ÷ 2');
+    if(R.D>0&&R.r.every(r=>Math.abs(r-Math.round(r))<1e-9))s3.push('#This also factors: (x − '+f(R.r[0])+')(x − '+f(R.r[1])+') = 0');
+    R.r.forEach((r,i)=>s3.push('>'+(R.r.length>1?'x'+'₁₂'[i]:'x')+' = '+f(r)+' units'));
+  }
+  h+=S('3. Break-even quantity',s3);
+  const pts=[];
+  if(R.r.length){
+    h+=S('4. Break-even revenue',R.r.map(r=>{pts.push({x:r,y:TR(r)});return ['If x = '+f(r)+': TR = '+f(a)+'('+f(r)+') − '+f(b)+'('+f(r)+')² = '+f(a*r)+' − '+f(b*r*r),'>TR = '+pf(TR(r))]}));
+    if(R.r.length>1){const lo=R.r[0],hi=R.r[1],c=[];
+      if(lo-1>=0)c.push('x = '+f(lo-1)+': P = '+pf(P(lo-1))+' ('+lab(P(lo-1))+')');
+      c.push('x = '+f(hi+1)+': P = '+pf(P(hi+1))+' ('+lab(P(hi+1))+')');
+      h+=S('5. Interpretation','>Break-even points: ('+f(lo)+', '+f(TR(lo))+') and ('+f(hi)+', '+f(TR(hi))+')','Selling fewer than '+f(lo)+' units or more than '+f(hi)+' units results in a loss. Between them, the firm earns a profit.','Check by substituting a point outside each break-even:',c)}
+    else h+=S('5. Interpretation','#There is one break-even point. The firm never earns a profit above it, because the highest possible profit is zero.');
+  }
+  const xs=B/(2*b);
+  if(xs>0)h+=S('6. Maximum profit','The profit curve opens downward, so its peak is at x = B ÷ 2b, where B = a − VC = '+f(B),'x = '+f(B)+' ÷ '+f(2*b)+' = '+f(xs)+' units','P = −'+f(b)+'('+f(xs)+')²'+t(B,'('+f(xs)+')')+t(-F,''),'>Maximum profit = '+pf(P(xs))+' at '+f(xs)+' units','#Selling more than this lowers profit because the price keeps dropping.');
+  if(u!==null)h+=S('7. Profit when sales are '+f(u)+' units','P = '+Pstr,'P = −'+f(b)+'('+f(u)+')²'+t(B,'('+f(u)+')')+t(-F,''),'P = '+f(-b*u*u)+t(B*u,'')+t(-F,''),'>P = '+pf(P(u))+' ('+lab(P(u))+')',a-b*u<0?'#Warning: at this volume the formula gives a negative selling price.':'');
+  if(T!==null){
+    const q2=(F+T)/b,R2=roots(p,q2);
+    let s=['Set P = '+f(T),Pstr+' = '+f(T),'Move '+f(T)+' to the left and multiply by −1/b = '+f(-1/b)+':','x²'+t(-p,'x')+t(q2,'')+' = 0','D = ('+f(p)+')² − 4('+f(q2)+') = '+f(R2.D)];
+    if(R2.D<0)s.push('>No real solution','#This profit is never reached. The maximum profit is '+pf(P(xs))+'.');
+    else{s.push('x = ['+f(p)+' ± √'+f(R2.D)+'] ÷ 2');R2.r.forEach((r,i)=>s.push('>'+(R2.r.length>1?'x'+'₁₂'[i]:'x')+' = '+f(r)+' units'));if(R2.r.length>1)s.push('#The target profit is earned at both volumes; the lower one needs less stock.')}
+    h+=S('8. Sales volume when profit is '+pf(T),s);
+  }
+  $('out').innerHTML=h;
+  chart(TR,x=>v*x+F,a/b,pts);
 }
-const EX = {
-  1: {mode: 'linear', p: 6, v: 3, fc: 9000, T: 9000, u: 600, nv: 2000, nf: '', np: 300},
-  2: {mode: 'linear', p: 15, v: 10, fc: 6000, T: 8000, u: 500, nv: 500, nf: 800, np: 500},
-  3: {mode: 'nonlinear', a: 12, b: 0.1, v: 7, fc: 40, T: '', u: 50}
-};
-document.querySelectorAll('[data-ex]').forEach(btn => btn.addEventListener('click', () => {
-  const ex = EX[btn.dataset.ex];
-  ids.forEach(id => { if (id in ex) $(id).value = ex[id]; else if (!['a', 'b', 'p'].includes(id)) $(id).value = ''; });
-  document.querySelector('input[name=mode][value=' + ex.mode + ']').checked = true; sync(); solve();
-}));
-document.querySelectorAll('input[name=mode]').forEach(r => r.addEventListener('change', () => { sync(); solve(); }));
-$('f').addEventListener('submit', ev => { ev.preventDefault(); solve(); });
-sync(); solve();
+
+/* ---------- wiring ---------- */
+let mode=1;
+const run=()=>mode===1?linear():nonlinear();
+function tab(n){mode=n;$('p1').hidden=n!==1;$('p2').hidden=n!==2;$('t1').setAttribute('aria-selected',n===1);$('t2').setAttribute('aria-selected',n===2);run()}
+$('t1').onclick=()=>tab(1);$('t2').onclick=()=>tab(2);
+document.querySelectorAll('input').forEach(i=>i.addEventListener('input',run));
+document.querySelectorAll('[data-clear]').forEach(b=>b.onclick=()=>{$(b.dataset.clear).querySelectorAll('input').forEach(i=>i.value='');run()});
+run();
 </script>
 </body>
 </html>
